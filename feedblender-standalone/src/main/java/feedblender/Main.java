@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
  * Time: 14:00
  */
 
-//@SpringBootApplication
 public class Main {
 
 	private static Logger log = LoggerFactory.getLogger(Main.class);
 	public static int HTTP_BIND_PORT = 8080;
+	public static int UPDATE_FREQUENCY = 1000 * 60 * 30;
 
 	public static void main(String[] args) {
 
@@ -70,6 +70,7 @@ public class Main {
 			"| |_ / _ \\/ _ \\/ _` |  _ \\| |/ _ \\ '_ \\ / _` |/ _ \\ '__|\n" +
 			"|  _|  __/  __/ (_| | |_) | |  __/ | | | (_| |  __/ |\n" +
 			"|_|  \\___|\\___|\\__,_|____/|_|\\___|_| |_|\\__,_|\\___|_|\n" +
-			"\n 1.0 up and running. Use RESTish API, check http://localhost:" + HTTP_BIND_PORT + "/");
+			"\n 1.0 up and running. Use RESTish API, check http://localhost:" + HTTP_BIND_PORT + "/\n\n"+
+			String.format("I will check every %d minutes for new feed items",UPDATE_FREQUENCY / 60000));
 	}
 }

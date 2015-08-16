@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Date: 16.08.2015
  * Time: 15:38
  */
-public class FeedItem implements Serializable{
+public class FeedItem implements Serializable {
 
 	private String feedId;
 	private String title;
@@ -26,7 +26,7 @@ public class FeedItem implements Serializable{
 	private List<FeedItemMediaLink> feedItemMediaLinks;
 
 	public FeedItem(String title, String feedName, Date date, String description,
-	                List<FeedItemMediaLink> feedItemMediaLinks, String link, String feedId){
+	                List<FeedItemMediaLink> feedItemMediaLinks, String link, String feedId) {
 		this.title = title;
 		this.feedName = feedName;
 		this.date = date;
@@ -35,53 +35,53 @@ public class FeedItem implements Serializable{
 		this.link = link;
 	}
 
-	public String getTitle(){
+	public String getTitle() {
 		return title;
 	}
 
-	public String getFeedName(){
+	public String getFeedName() {
 		return feedName;
 	}
 
-	public Date getDate(){
+	public Date getDate() {
 		return date;
 	}
 
-	public String getDescription(){
+	public String getDescription() {
 		return description;
 	}
 
-	public List<FeedItemMediaLink> getFeedItemMediaLinks(){
+	public List<FeedItemMediaLink> getFeedItemMediaLinks() {
 		return feedItemMediaLinks;
 	}
 
-	public String getLink(){
+	public String getLink() {
 		return link;
 	}
 
-	public String getFeedId(){
+	public String getFeedId() {
 		return feedId;
 	}
 
-	public void setFeedId(String feedId){
+	public void setFeedId(String feedId) {
 		this.feedId = feedId;
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return "FeedItem{" +
-				"feedId='" + feedId + '\'' +
-				", title='" + title + '\'' +
-				", feedName='" + feedName + '\'' +
-				", date=" + date +
-				", description='" + description + '\'' +
-				", link='" + link + '\'' +
-				", feedItemMediaLinks=" + feedItemMediaLinks +
-				'}';
+			"feedId='" + feedId + '\'' +
+			", title='" + title + '\'' +
+			", feedName='" + feedName + '\'' +
+			", date=" + date +
+			", description='" + description + '\'' +
+			", link='" + link + '\'' +
+			", feedItemMediaLinks=" + feedItemMediaLinks +
+			'}';
 	}
 
-	public JsonObject asJsonObject(){
-		return new JsonObject(){{
+	public JsonObject asJsonObject() {
+		return new JsonObject() {{
 			put("feedId", feedId);
 			put("title", title);
 			put("feedName", feedName);
@@ -90,8 +90,8 @@ public class FeedItem implements Serializable{
 			put("link", link);
 			put("feedItemMediaLinks", new JsonArray(
 				feedItemMediaLinks.stream().
-						map(FeedItemMediaLink::asJsonObject).
-						collect(Collectors.toCollection(LinkedList::new))
+					map(FeedItemMediaLink::asJsonObject).
+					collect(Collectors.toCollection(LinkedList::new))
 			));
 		}};
 

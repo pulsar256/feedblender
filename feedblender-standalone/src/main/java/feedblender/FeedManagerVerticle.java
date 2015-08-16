@@ -70,11 +70,11 @@ public class FeedManagerVerticle extends AbstractVerticle {
 			FeedStorage.remove(feedUrl);
 		});
 
-//		// once on boot
-//		vertx.executeBlocking(blockingHandler -> {
-//			fetchFeeds(feedUrls);
-//			blockingHandler.complete();
-//		}, resultHandler -> {});
+		// once on boot
+		vertx.executeBlocking(blockingHandler -> {
+			fetchFeeds(feedUrls);
+			blockingHandler.complete();
+		}, resultHandler -> {});
 
 		// and once every 30 minutes
 		vertx.setPeriodic(1000 * 60 * 30,
@@ -91,20 +91,20 @@ public class FeedManagerVerticle extends AbstractVerticle {
 		log.debug(String.format("frefreshing %d feeds", feedUrls.size()));
 
 		for (String feedUrl : feedUrls) {
-			log.debug("looking at: " + feedUrl);
+			log.info("refreshing: " + feedUrl);
 			SyndFeedInput input = new SyndFeedInput();
 
 			try (InputStream in = (new URL(feedUrl)).openStream()) {
 
 				SyndFeed rssFeed = input.build(new XmlReader(in));
-				log.debug("Feed title: " + rssFeed.getTitle());
+				log.trace("Feed title: " + rssFeed.getTitle());
 				for (SyndEntry syndEntry : rssFeed.getEntries()) {
 					try {
 						List<FeedItemMediaLink> mediaLinks = new ArrayList<>();
 						// log.debug("->"+syndEntry.getTitle());
 
 						if (syndEntry.getEnclosures() == null || syndEntry.getEnclosures().isEmpty()) {
-							log.warn("no media found for " + syndEntry.getTitle());
+							log.trace("no media found for " + syndEntry.getTitle());
 							continue;
 						} else {
 							for (SyndEnclosure syndEnclosure : syndEntry.getEnclosures()) {

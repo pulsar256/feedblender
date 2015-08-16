@@ -2,23 +2,29 @@
 
 ## What the heck is that?
  Nothing of much interesst, really. It is my crude attempt to HelloWorld the Vertx.io Framework. I am very aware
- of the conflicting concepts in my approach vs. the way Vertx.io does thing. Point is: I had to make some
- mistakes to learn.
+ of the conflicting concepts in my approach vs. the way Vertx.io does things. Point is: I had to make some
+ mistakes to learn from.
 
 ## What does it do?
  I have been using Yahoo Pipes to mix my Podcast-Feeds so I could subscribe to only one aggregated feed on my podcatcher.
- Pipes is going away, I wrote my own pipe. So, what does it really do? You can add / remove RSS feeds via the provided
+ Pipes is going away so I wrote my own pipe. So, what does it really do? You can add / remove RSS feeds via the provided
  RESTish API and get a nice, remixed RSS feed sorted by publish date.
 
 ## How do I run that thing?
-```
-?  FeedBlender.io git:(master) ? mvn package
-(... some garbe ...)
-?  FeedBlender.io git:(master) ? java -jar feedblender-standalone/target/feedblender-1.0-SNAPSHOT-fat.jar 8080
-2015-08-17 00:15:16.259 [main] INFO  f.Main - Usage: java -jar <feedblender.jar> bind-port
-2015-08-17 00:15:16.262 [main] INFO  f.Main - Usage: default value for bild-port is 8080
-2015-08-17 00:15:16.536 [main] INFO  f.Main -
 
+You will need java8 and maven. Then:
+
+```
+➜  FeedBlender.io git:(master) ✗ mvn package
+
+(... some garbage ...)
+[INFO] BUILD SUCCESS
+(... some garbage ...)
+
+➜  FeedBlender.io git:(master) ✗ java -jar feedblender-standalone/target/feedblender-1.0-SNAPSHOT-fat.jar 8080
+2015-08-17 00:15:16.259 [main] INFO  f.Main - Usage: java -jar <feedblender.jar> bind-port
+2015-08-17 00:15:16.262 [main] INFO  f.Main - Usage: default value for bind-port is 8080
+2015-08-17 00:15:16.536 [main] INFO  f.Main -
  _____             _ ____  _                _
 |  ___|__  ___  __| | __ )| | ___ _ __   __| | ___ _ __
 | |_ / _ \/ _ \/ _` |  _ \| |/ _ \ '_ \ / _` |/ _ \ '__|
@@ -28,9 +34,34 @@
  1.0 up and running. Use RESTish API, check http://localhost:8080/
 ```
 
-
 ## Can I has it?
 Fork off!
+
+## Manual?
+not yet, but this might help:
+
+RESTish Endpoints:
+
+* GET:    localhost:8080/feeds    -> json, currently registered rss feeds
+* GET:    localhost:8080/items    -> json, currently registered rss items
+* GET:    localhost:8080/feed.xml -> xml/rss_2.0
+
+* PUT:    localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
+* DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
+
+* POST:   localhost:8080/refresh  -> null
+
+Json-Example:
+```
+{
+  "feeds": [
+		"http://embedded.fm/episodes?format=rss",
+		"http://leoville.tv/podcasts/floss.xml",
+		"http://feeds.feedburner.com/headphonecommutepodcast?format=xml"
+	]
+}
+```
+
 
 ## License?
 
