@@ -1,8 +1,6 @@
 package feedblender;
 
 import com.google.common.base.Strings;
-import com.rometools.rome.feed.synd.SyndEnclosure;
-import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
@@ -42,88 +40,71 @@ public class FeedManagerVerticle extends AbstractVerticle {
 	public void start(Future<Void> startFuture) throws Exception {
 		super.start(startFuture);
 
-		Set<String> feedUrls = FeedStorage.getFeeds();
 		EventBus eb = vertx.eventBus();
 
-		eb.consumer(FEED_REFRESH, h -> vertx.executeBlocking(future -> fetchFeeds(feedUrls), result -> {
-		}));
+		eb.consumer(FEED_REFRESH, h -> vertx.executeBlocking(future -> fetchFeeds(FeedStorage.getFeeds()), result -> {}));
 
-		eb.consumer(FEED_ADD, h -> {
-			String feedUrl = (String) h.body();
+		eb.consumer(FEED_ADD, message -> {
+			String feedUrl = (String) message.body();
 			if (!Strings.isNullOrEmpty(feedUrl)) {
 				try {
-					// do some basic uri validation
-					URI feedUri = new URI(feedUrl);
-					if (!feedUri.isAbsolute()) throw new IllegalArgumentException("Invalid feed Uri");
-					FeedStorage.addFeed(feedUrl);
-					fetchFeeds(new HashSet<String>() {{
-						add(feedUrl);
-					}});
-				} catch (Exception e) {
+					if (!new URI(feedUrl).isAbsolute()) throw new IllegalArgumentException("Invalid feed Uri");
+					fetchFeeds(new HashSet<String>(){{add(FeedStorage.addFeed(feedUrl));}});
+				}
+				catch (Exception e) {
 					log.error("could not add feed", e);
 				}
 			}
 		});
 
-		eb.consumer(FEED_DEL, h -> {
-			String feedUrl = (String) h.body();
-			FeedStorage.remove(feedUrl);
-		});
+		eb.consumer(FEED_DEL, message -> FeedStorage.remove((String) message.body()));
 
-		// once on boot
+		// update feeds right after booting up
 		vertx.executeBlocking(blockingHandler -> {
-			fetchFeeds(feedUrls);
+			fetchFeeds(FeedStorage.getFeeds());
 			blockingHandler.complete();
 		}, resultHandler -> {});
 
-		// and once every 30 minutes
-		vertx.setPeriodic(1000 * 60 * 30,
-			h ->
-				vertx.executeBlocking(blockingHandler ->
-					fetchFeeds(feedUrls), resultHandler -> {
-				}));
-
+		// schedule periodic feed update
+		vertx.setPeriodic(Main.UPDATE_FREQUENCY,
+			periodicHandler ->
+				vertx.executeBlocking(blockingHandler -> fetchFeeds(FeedStorage.getFeeds()), resultHandler -> {}));
 	}
 
 	private void fetchFeeds(Set<String> feedUrls) {
-		EventBus eb = vertx.eventBus();
-
 		log.debug(String.format("frefreshing %d feeds", feedUrls.size()));
 
-		for (String feedUrl : feedUrls) {
+		feedUrls.stream().forEach(feedUrl -> {
 			log.info("refreshing: " + feedUrl);
-			SyndFeedInput input = new SyndFeedInput();
-
 			try (InputStream in = (new URL(feedUrl)).openStream()) {
-
-				SyndFeed rssFeed = input.build(new XmlReader(in));
+				SyndFeed rssFeed = (new SyndFeedInput()).build(new XmlReader(in));
 				log.trace("Feed title: " + rssFeed.getTitle());
-				for (SyndEntry syndEntry : rssFeed.getEntries()) {
+				rssFeed.getEntries().stream().forEach(entry -> {
 					try {
 						List<FeedItemMediaLink> mediaLinks = new ArrayList<>();
-						// log.debug("->"+syndEntry.getTitle());
 
-						if (syndEntry.getEnclosures() == null || syndEntry.getEnclosures().isEmpty()) {
-							log.trace("no media found for " + syndEntry.getTitle());
-							continue;
-						} else {
-							for (SyndEnclosure syndEnclosure : syndEntry.getEnclosures()) {
-								mediaLinks.add(new FeedItemMediaLink(syndEnclosure.getUrl(), syndEnclosure.getType(), syndEnclosure.getLength()));
-							}
+						if (entry.getEnclosures() == null || entry.getEnclosures().isEmpty()) {
+							log.trace("no media found for " + entry.getTitle());
+							return;
+						}
+						else {
+							entry.getEnclosures().stream().forEach(enclosure ->
+								mediaLinks.add(new FeedItemMediaLink(enclosure.getUrl(), enclosure.getType(), enclosure.getLength())));
 						}
 
-						eb.publish(FEED_BUS,
-							new FeedItem(
-								syndEntry.getTitle(), rssFeed.getTitle(), syndEntry.getPublishedDate(),
-								syndEntry.getDescription().getValue(), mediaLinks, syndEntry.getLink(), feedUrl));
-					} catch (Exception ex) {
+						vertx.eventBus().publish(FEED_BUS,
+							new FeedItem(entry.getTitle(), rssFeed.getTitle(), entry.getPublishedDate(),
+								entry.getDescription().getValue(), mediaLinks, entry.getLink(), feedUrl));
+					}
+					catch (Exception ex) {
 						log.error("feed update failed", ex);
 					}
-				}
-			} catch (Exception ex) {
+				});
+			}
+			catch (Exception ex) {
 				log.warn("could not update all feeds", ex);
 			}
-		}
+		});
 
 		log.info("All feeds refreshed.");
 	}

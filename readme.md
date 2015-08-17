@@ -44,12 +44,10 @@ RESTish Endpoints:
 
 * GET:    localhost:8080/feeds    -> json, currently registered rss feeds
 * GET:    localhost:8080/items    -> json, currently registered rss items
-* GET:    localhost:8080/feeds.xml -> xml/rss_2.0
-
-* PUT:    localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
-* DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
-
+* GET:    localhost:8080/feed.xml -> xml/rss_2.0
+* POST:   localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
 * POST:   localhost:8080/refresh  -> null
+* DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
 
 Json-Example:
 ```

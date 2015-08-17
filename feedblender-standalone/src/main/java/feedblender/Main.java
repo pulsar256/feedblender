@@ -70,7 +70,7 @@ public class Main {
 			"| |_ / _ \\/ _ \\/ _` |  _ \\| |/ _ \\ '_ \\ / _` |/ _ \\ '__|\n" +
 			"|  _|  __/  __/ (_| | |_) | |  __/ | | | (_| |  __/ |\n" +
 			"|_|  \\___|\\___|\\__,_|____/|_|\\___|_| |_|\\__,_|\\___|_|\n" +
-			"\n 1.0 up and running. Use RESTish API, check http://localhost:" + HTTP_BIND_PORT + "/\n\n"+
+			"1.0 up and running. Use RESTish API, check http://localhost:" + HTTP_BIND_PORT + "/\n\n"+
 			String.format("I will check every %d minutes for new feed items",UPDATE_FREQUENCY / 60000));
 	}
 }

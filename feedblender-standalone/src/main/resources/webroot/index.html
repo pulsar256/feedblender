@@ -24,27 +24,16 @@
 			Yeah, Manual is missing. Figure it out:
 			<pre class="md-whiteframe-z3">
 
+RESTish Endpoints:
 
-router.get().path("/items").produces(APPLICATION_JSON).handler(this::getItems);
-router.get().path("/feeds").produces(APPLICATION_JSON).handler(this::getFeeds);
-router.get().path("/feeds.xml").produces(TEXT_XML).handler(this::getAggregatedFeed);
+* GET:    localhost:8080/feeds    -> json, currently registered rss feeds
+* GET:    localhost:8080/items    -> json, currently registered rss items
+* GET:    localhost:8080/feed.xml -> xml/rss_2.0
+* POST:   localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
+* POST:   localhost:8080/refresh  -> null
+* DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
 
-router.put().path("/feeds").consumes(APPLICATION_JSON).produces(APPLICATION_JSON).handler(this::putFeeds);
-router.delete().path("/feeds").consumes(APPLICATION_JSON).produces(APPLICATION_JSON).handler(this::deleteFeeds);
-router.post().path("/refresh").produces(APPLICATION_JSON).handler(this::refresh);
-
-or simpler:
-
-GET:    localhost:8080/feeds    -> json, currently registered rss feeds
-GET:    localhost:8080/items    -> json, currently registered rss items
-GET:    localhost:8080/feed.xml -> xml/rss_2.0
-
-PUT:    localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
-DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
-
-POST:   localhost:8080/refresh  -> null
-
-Example:
+Json-Example:
 
 {
   "feeds": [

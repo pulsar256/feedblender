@@ -20,15 +20,16 @@ public class FeedStorage {
 	private static Type listType = new TypeToken<Set<String>>(){}.getType();
 	public static final String PREFS_FEED_URL = "feedUrls";
 
-	public static void addFeed(String feed) {
+	public static String addFeed(String feed) {
 		try{
 			Set<String> feeds = getFeeds();
 			feeds.add(feed);
 			prefs.put(PREFS_FEED_URL, gson.toJson(feeds));
 			prefs.sync();
+			return feed;
 		}
 		catch (Exception ex){
-			throw new IllegalStateException("Could not save preferences");
+			throw new IllegalStateException("Could not save preferences",ex);
 		}
 	}
 
@@ -40,7 +41,7 @@ public class FeedStorage {
 			prefs.sync();
 		}
 		catch (Exception ex){
-			throw new IllegalStateException("Could not save preferences");
+			throw new IllegalStateException("Could not save preferences",ex);
 		}
 	}
 
