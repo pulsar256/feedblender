@@ -34,7 +34,7 @@ You will need java8 and maven. Then:
  1.0 up and running. Use RESTish API, check http://localhost:8080/
 ```
 
-## Can I has it?
+## Can I haz it?
 Fork off!
 
 ## Manual?
@@ -44,7 +44,7 @@ RESTish Endpoints:
 
 * GET:    localhost:8080/feeds    -> json, currently registered rss feeds
 * GET:    localhost:8080/items    -> json, currently registered rss items
-* GET:    localhost:8080/feed.xml -> xml/rss_2.0
+* GET:    localhost:8080/feeds.xml -> xml/rss_2.0
 
 * PUT:    localhost:8080/feeds    -> json (see example below, add one or more rss feeds)
 * DELETE: localhost:8080/feeds    -> json (see example below, delete one or more rss feeds)
