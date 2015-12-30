@@ -89,7 +89,7 @@ public class FeedItem implements Serializable {
 			put("description", description);
 			put("link", link);
 			put("feedItemMediaLinks", new JsonArray(
-				feedItemMediaLinks.stream().
+				(List<JsonObject>) feedItemMediaLinks.stream().
 					map(FeedItemMediaLink::asJsonObject).
 					collect(Collectors.toCollection(LinkedList::new))
 			));

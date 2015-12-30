@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class WebServerVerticle extends AbstractVerticle {
 			setChunked(true).
 			putHeader("content-type", APPLICATION_JSON).
 			end(new JsonObject() {{
-				put("items", data.stream().map(FeedItem::asJsonObject).collect(Collectors.toCollection(LinkedList::new)));
+				put("items", (List<JsonObject>) data.stream().map(FeedItem::asJsonObject).collect(Collectors.toCollection(LinkedList::new)));
 			}}.encode());
 	}
 

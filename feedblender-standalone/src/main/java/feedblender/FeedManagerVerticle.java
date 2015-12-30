@@ -42,7 +42,9 @@ public class FeedManagerVerticle extends AbstractVerticle {
 
 		EventBus eb = vertx.eventBus();
 
-		eb.consumer(FEED_REFRESH, h -> vertx.executeBlocking(future -> fetchFeeds(FeedStorage.getFeeds()), result -> {}));
+		eb.consumer(FEED_REFRESH, h ->
+				vertx.executeBlocking(future ->
+						fetchFeeds(FeedStorage.getFeeds()), result -> {}));
 
 		eb.consumer(FEED_ADD, message -> {
 			String feedUrl = (String) message.body();
@@ -91,7 +93,6 @@ public class FeedManagerVerticle extends AbstractVerticle {
 							entry.getEnclosures().stream().forEach(enclosure ->
 								mediaLinks.add(new FeedItemMediaLink(enclosure.getUrl(), enclosure.getType(), enclosure.getLength())));
 						}
-
 						vertx.eventBus().publish(FEED_BUS,
 							new FeedItem(entry.getTitle(), rssFeed.getTitle(), entry.getPublishedDate(),
 								entry.getDescription().getValue(), mediaLinks, entry.getLink(), feedUrl));
